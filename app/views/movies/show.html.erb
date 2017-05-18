@@ -23,85 +23,58 @@
       <dt>Director</dt>
       <dd>
         <a href="/directors/<%=@movie.director_id%>">
-          <%= Director.find_by(:id => @movie.director_id).name %>
+          <%= @movie.director.name %>
         </a>
       </dd>
 
       <dt>Cast</dt>
       <dd>
         <ul class="list-group">
-            <% Character.where(:movie_id => @movie.id).each do |cast| %>
-                <li class="list-group-item">
-                  <a href="/actor/<%=cast.id%>">
-                    <%= Actor.find_by(cast.actor_id).name %> (<%=cast.name%>)
-                  </a>
-                </li>
+            <% @movie.actors.each do |actor| %>
+            <li class="list-group-item">
+              <a href="/actors/<%=actor.id%>">
+                <%= actor.name %>
+              </a>
+              <%= Character.find_by(:movie_id => @movie.id, :actor_id => actor.id).name%>
+          </li>
             <% end %>
+
+
+
           </li>
           <li class="list-group-item">
-            <form action="/create_movie" method="post">
+            <form action="/create_character" method="post">
               <!-- Hidden input for authenticity token to protect from forgery -->
               <input name="authenticity_token" type="hidden" value="<%= form_authenticity_token %>">
 
-              <!-- Label and input for title -->
-              <div class="form-group">
-                <label for="title" class="control-label">
-                  Title
-                </label>
+              <!-- Label and input for movie_id -->
 
-                <input type="text" id="title" name="title" placeholder="Title" class="form-control" value="<%= @movie.title %>">
+              <input type="hidden" id="movie_id" name="movie_id" placeholder="Movie" class="form-control" value="<%=@movie.id%>">
+
+              <!-- Label and input for actor_id -->
+              <div class="form-group">
+                <label for="actor_id" class="control-label">
+                  Actor
+                </label>
+                <%=select_tag(:actor_id, options_from_collection_for_select(Actor.all, :id, :name, @character.actor_id), :class => "form-control")%>
+                <a href ="/actor/new">or add a new actor</a>
               </div>
 
-              <!-- Label and input for year -->
+              <!-- Label and input for name -->
               <div class="form-group">
-                <label for="year" class="control-label">
-                  Year
+                <label for="name" class="control-label">
+                  Name
                 </label>
 
-                <input type="text" id="year" name="year" placeholder="Year" class="form-control" value="<%= @movie.year %>">
+                <input type="text" id="name" name="name" placeholder="Name" class="form-control" value="<%= @character.name %>">
               </div>
 
-              <!-- Label and input for duration -->
-              <div class="form-group">
-                <label for="duration" class="control-label">
-                  Duration
-                </label>
-
-                <input type="text" id="duration" name="duration" placeholder="Duration" class="form-control" value="<%= @movie.duration %>">
-              </div>
-
-              <!-- Label and input for description -->
-              <div class="form-group">
-                <label for="description" class="control-label">
-                  Description
-                </label>
-
-                <textarea id="description" name="description" placeholder="Description" class="form-control" rows="3"><%= @movie.description %></textarea>
-              </div>
-
-              <!-- Label and input for image_url -->
-              <div class="form-group">
-                <label for="image_url" class="control-label">
-                  Image url
-                </label>
-
-                <input type="text" id="image_url" name="image_url" placeholder="Image url" class="form-control" value="<%= @movie.image_url %>">
-              </div>
-
-              <!-- Input for director_id -->
-                <input type="hidden" id="director_id" name="director_id" placeholder="Director" class="form-control" value="<%= @director.id %>">
               <button class="btn btn-success">
-                Create Movie
+                Create Character
               </button>
               or
-              <a href="/movies">Cancel</a>
+              <a href="/characters">Cancel</a>
             </form>
-
-
-
-
-
-
           </li>
       </dd>
 

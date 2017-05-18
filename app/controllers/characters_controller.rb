@@ -35,7 +35,7 @@ class CharactersController < ApplicationController
 
   def edit
     @character = Character.find(params[:id])
-
+    @movie = Movie.new
     render("characters/edit.html.erb")
   end
 
